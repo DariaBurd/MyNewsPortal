@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Новостной портал{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        header, footer { background: #333; color: white; padding: 1rem; }
+        main { padding: 1rem; }
+        .news-item { margin-bottom: 1rem; padding: 1rem; border: 1px solid #ddd; }
+        .pagination { margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="/" style="color: white; text-decoration: none;">Новостной портал</a></h1>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {% now "Y" %} Новостной портал. Все права защищены.</p>
+    </footer>
+</body>
+</html>

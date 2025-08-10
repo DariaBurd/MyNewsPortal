@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Поиск новостей</h1>
+
+<form method="GET">
+    <div class="search-form">
+        {{ filter.form.as_p }}
+        <button type="submit" class="btn btn-primary">Найти</button>
+    </div>
+</form>
+
+{% if page_obj %}
+    <h2>Результаты поиска (Всего: {{ page_obj.paginator.count }})</h2>
+    
+    <table class="news-table">
+    </table>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">Первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">Предыдущая</a>
+            {% endif %}
+
+            <span class="current">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">Следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">Последняя</a>
+            {% endif %}
+        </span>
+    </div>
+{% else %}
+    <p>Нет новостей, соответствующих критериям поиска.</p>
+{% endif %}
+
+<style>
+    .search-form {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f5f5f5;
+        border-radius: 5px;
+    }
+    .search-form p {
+        margin-bottom: 10px;
+    }
+    .pagination {
+        margin-top: 20px;
+    }
+    .pagination a {
+        margin: 0 5px;
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+    }
+</style>
+{% endblock %}

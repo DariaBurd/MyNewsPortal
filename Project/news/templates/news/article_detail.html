@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+<div class="article-detail">
+    <h1>{{ news.title|censor }}</h1>
+    <div class="meta">
+        <span class="date">{{ news.created_at|date:"d.m.Y" }}</span>
+        <span class="word-count">{{ news.text|wordcount }} слов</span>
+    </div>
+
+    <div class="content">
+        {{ news.text|censor|linebreaks }}
+    </div>
+
+    <a href="{% url 'article_list' %}" class="back-link">← Все статьи</a>
+</div>
+
+<style>
+    .article-detail {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .meta {
+        color: #666;
+        margin: 10px 0 20px;
+        display: flex;
+        gap: 15px;
+    }
+    .content {
+        line-height: 1.6;
+        font-size: 1.1em;
+    }
+    .back-link {
+        display: inline-block;
+        margin-top: 30px;
+        color: #06c;
+    }
+</style>
+{% endblock %}

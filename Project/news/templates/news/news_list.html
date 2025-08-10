@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+
+<div class="mb-3">
+    <a href="{% url 'news_create' %}" class="btn btn-success">+ Добавить новость</a>
+</div>
+
+<h1>Новости (Всего: {{ news|length }})</h1>
+
+<table class="news-table">
+    <thead>
+        <tr>
+            <th>Заголовок</th>
+            <th>Дата</th>
+            <th>Анонс</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in posts %}
+        <tr>
+            <td>{{ item.title|censor }}</td>
+            <td><a href="{% url 'news_detail' item.pk %}">{{ item.title }}</a></td>
+            <td class="date">{{ item.created_at|date:"d.m.Y" }}</td>
+            <td class="preview">
+                {{ item.text|truncatechars:20|censor }}
+                <small>({{ item.text|wordcount }} слов)</small>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endif %}
+
+<style>
+    .news-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-family: Arial, sans-serif;
+    }
+    .news-table th {
+        background-color: #f5f5f5;
+        padding: 12px;
+        text-align: left;
+        border-bottom: 2px solid #ddd;
+    }
+    .news-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        vertical-align: top;
+    }
+    .news-table tr:hover {
+        background-color: #f9f9f9;
+    }
+    .date {
+        white-space: nowrap;
+        color: #555;
+    }
+    .preview {
+        max-width: 500px;
+    }
+    .rating {
+        text-align: center;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    small {
+        color: #777;
+        font-size: 0.8em;
+    }
+    .pagination {
+        margin-top: 30px;
+        text-align: center;
+    }
+    .pagination a {
+        color: #3498db;
+        padding: 8px 16px;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        margin: 0 4px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+    .pagination a:hover {
+        background-color: #f0f0f0;
+    }
+    .pagination .current {
+        padding: 8px 16px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
