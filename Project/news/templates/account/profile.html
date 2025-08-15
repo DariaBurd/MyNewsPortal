@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Профиль пользователя {{ user.username }}</h1>
+
+<div class="profile-info">
+    <p>Имя: {{ user.first_name }}</p>
+    <p>Фамилия: {{ user.last_name }}</p>
+    <p>Email: {{ user.email }}</p>
+    
+    {% if user.groups.filter.name == 'authors' %}
+        <p class="badge bg-success">Автор</p>
+    {% else %}
+        <a href="{% url 'become_author' %}" class="btn btn-primary">Стать автором</a>
+    {% endif %}
+</div>
+
+<style>
+    .profile-info {
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .badge {
+        font-size: 1rem;
+        padding: 8px 12px;
+    }
+</style>
+{% endblock %}

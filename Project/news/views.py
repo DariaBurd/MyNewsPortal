@@ -6,6 +6,14 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from .models import Post
 from .filters import PostFilter
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
+from django.shortcuts import redirect
+from .models import Post, Author
+
 
 class NewsList(ListView):
     model = Post
@@ -52,6 +60,7 @@ def news_search(request):
 
 
 class NewsCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    permission_required = ('news.add_post',)
     model = Post
     template_name = 'news/news_create.html'
     fields = ['title', 'text', 'categories']
@@ -67,6 +76,7 @@ class NewsCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 
 class NewsUpdate(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    permission_required = ('news.change_post',)
     model = Post
     template_name = 'news/news_edit.html'
     fields = ['title', 'text', 'categories']
@@ -117,3 +127,9 @@ class ArticleDelete(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return Post.objects.filter(post_type='AR')
+
+@login_required
+def become_author(request):
+    authors_group = Group.objects.get_or_create(name='authors')[0]
+    request.user.groups.add(authors_group)
+    return redirect('profile')

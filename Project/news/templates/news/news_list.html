@@ -3,9 +3,14 @@
 {% load custom_filters %}
 
 {% block content %}
-
 <div class="mb-3">
+    {% if perms.news.add_post %}
     <a href="{% url 'news_create' %}" class="btn btn-success">+ Добавить новость</a>
+    {% endif %}
+
+    {% if request.user.is_authenticated and not user.groups.filter.name == 'authors' %}
+    <a href="{% url 'become_author' %}" class="btn btn-primary">Стать автором</a>
+    {% endif %}
 </div>
 
 <h1>Новости (Всего: {{ news|length }})</h1>
