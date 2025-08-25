@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,10 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'news',
     'django_filters',
-    'allauth.socialaccount.providers.yandex',
+    'django_apscheduler',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount'
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.yandex',
 ]
 
 SITE_ID=1
@@ -155,3 +158,13 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'zayka-energy'
+EMAIL_HOST_PASSWORD = 'darinna121'
+EMAIL_USE_SSL = True
+
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25

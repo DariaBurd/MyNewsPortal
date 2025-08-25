@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Новая статья</title>
+</head>
+<body>
+    <h2>Новая статья в категории "{{ post.category.name }}"</h2>
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.excerpt|default:post.content|truncatewords:30 }}</p>
+    <p><a href="{{ site_url }}/posts/{{ post.id }}">Читать полностью →</a></p>
+    <br>
+    <p>Чтобы отписаться от уведомлений этой категории, перейдите в ваш профиль.</p>
+</body>
+</html>

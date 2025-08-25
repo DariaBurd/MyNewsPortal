@@ -13,7 +13,23 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.shortcuts import redirect
 from .models import Post, Author
+from django.core.mail import send_mail
 
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.contrib.auth.models import Group
+from .models import Author
+
+
+@login_required
+def become_author(request):
+    authors_group, created = Group.objects.get_or_create(name='authors')
+    request.user.groups.add(authors_group)
+
+    if not hasattr(request.user, 'author'):
+        Author.objects.create(user=request.user)
+
+    return redirect('profile')
 
 class NewsList(ListView):
     model = Post
@@ -128,8 +144,41 @@ class ArticleDelete(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         return Post.objects.filter(post_type='AR')
 
+
 @login_required
-def become_author(request):
-    authors_group = Group.objects.get_or_create(name='authors')[0]
-    request.user.groups.add(authors_group)
-    return redirect('profile')
+def toggle_subscription(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    user = request.user
+
+    subscription, created = Subscription.objects.get_or_create(
+        user=user,
+        category=category
+    )
+
+    if not created:
+        subscription.delete()
+        is_subscribed = False
+    else:
+        is_subscribed = True
+
+    return JsonResponse({
+        'is_subscribed': is_subscribed,
+        'subscribers_count': category.subscribers.count()
+    })
+
+
+def send_welcome_email(user):
+    subject = 'Добро пожаловать в NewsPortal!'
+    message = render_to_string('emails/welcome.html', {
+        'user': user,
+        'site_url': settings.SITE_URL
+    })
+
+    send_mail(
+        subject=subject,
+        message='Hello! Welcome to our News Portal!',
+        html_message=message,
+        from_email=zayka-energy@yandex.ru,
+        recipient_list=[user.email],
+        fail_silently=False,
+    )

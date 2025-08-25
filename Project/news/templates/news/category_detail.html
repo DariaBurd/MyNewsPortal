@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Категория: {{ category.name }}</h1>
+
+
+<div class="subscription-section">
+    <button class="btn btn-primary toggle-subscription" 
+            data-category-id="{{ category.id }}">
+        {% if user in category.subscribers.all %}
+            Отписаться
+        {% else %}
+            Подписаться
+        {% endif %}
+    </button>
+    <span class="subscribers-count">{{ category.subscribers.count }}</span> подписчиков
+</div>
+
+
+{% for post in category.post_set.all %}
+    <div class="post">
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.preview }}</p>
+    </div>
+{% endfor %}
+
+{% endblock %}
