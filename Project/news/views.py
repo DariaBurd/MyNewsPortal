@@ -182,3 +182,4 @@ def send_welcome_email(user):
         recipient_list=[user.email],
         fail_silently=False,
     )
+

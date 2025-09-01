@@ -7,6 +7,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
+#from .tasks import send_new_post_notification
 
 
 class Author(models.Model):
@@ -62,17 +63,6 @@ class Post(models.Model):
     rating = models.IntegerField(default=0)
     is_published = models.BooleanField(default=True, verbose_name='Опубликовано')
 
-    def save(self, *args, **kwargs):
-        is_new = self.pk is None
-
-        if not self.excerpt and self.text:
-            self.excerpt = self.text[:150] + '...' if len(self.text) > 150 else self.text
-
-        super().save(*args, **kwargs)
-
-        if is_new and self.is_published:
-            self.send_new_post_notifications()
-
     def like(self):
         self.rating += 1
         self.save()
@@ -104,7 +94,7 @@ class Post(models.Model):
                     try:
                         send_mail(
                             subject=subject,
-                            message='',  # Пустое текстовое сообщение
+                            message='',
                             html_message=message,
                             from_email=settings.DEFAULT_FROM_EMAIL,
                             recipient_list=[user.email],
@@ -115,6 +105,17 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+
+        if not self.excerpt and self.text:
+            self.excerpt = self.text[:150] + '...' if len(self.text) > 150 else self.text
+
+        super().save(*args, **kwargs)
+
+        if is_new and self.is_published:
+            send_new_post_notification.delay(self.id)
 
 
 class PostCategory(models.Model):

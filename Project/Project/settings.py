@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
+from celery import Celery
 
 
 
@@ -161,11 +162,26 @@ SOCIALACCOUNT_PROVIDERS = {
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = '********'
-EMAIL_HOST_PASSWORD = '********'
+EMAIL_HOST_USER = 'z*********y'
+EMAIL_HOST_PASSWORD = '************'
 EMAIL_USE_SSL = True
 
 
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Project.settings')
+
+app = Celery('Project')
+app.config_from_object('django.conf:settings', namespace='CELERY')
+app.autodiscover_tasks()
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+
+CELERY_TIMEZONE = 'Europe/Moscow'
