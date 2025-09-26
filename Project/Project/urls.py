@@ -15,4 +15,5 @@ urlpatterns = [
     path('accounts/profile/edit/', ProfileUpdateView.as_view(), name='profile_edit'),
     path('accounts/yandex/login/', include('allauth.socialaccount.providers.yandex.urls')),
     path('accounts/profile/', login_required(TemplateView.as_view(template_name='account/profile.html')), name='profile'),
+    path('api/auth/', include('rest_framework.urls')),
 ]
